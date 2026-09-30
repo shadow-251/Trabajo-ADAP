@@ -1,0 +1,21 @@
+@startuml
+actor :Administrador: as admin
+actor :Usuario: as usuario
+
+usecase (Generar factura) as generarFactura
+usecase (Autenticarse) as login
+usecase (Generar Factura papel) as facturaPapel
+note right of login : Estar registrado
+usecase (Estar registrado) as registrado
+
+usuario -- login
+usuario -- generarFactura
+admin -- login
+admin -- registrado
+admin -- generarFactura
+
+generarFactura ..> login : <<include>>
+generarFactura ..|> facturaPapel : <<extends>>
+login ..> registrado : <<dependency>>
+
+@enduml
