@@ -1,0 +1,36 @@
+@startuml
+left to right direction
+actor Lector
+actor Administrador
+actor Superadministrador
+actor Stripe
+
+Lector <|-- Administrador
+Administrador <|-- Superadministrador
+
+rectangle "App de facturación Turbine" {
+  usecase "Iniciar sesión" as login
+  usecase "Gestionar clientes" as clientes
+  usecase "Gestionar facturas" as facturas
+  usecase "Enviar factura al cliente" as enviar
+  usecase "Comprobar pago" as pago
+  usecase "Enviar recordatorio" as recordatorio
+  usecase "Gestionar usuarios" as usuarios
+  usecase "Ver dashboard" as dashboard
+  usecase "Configurar sistema" as config
+}
+
+Lector --> login
+Lector --> clientes
+Lector --> facturas
+
+Administrador --> usuarios
+Administrador --> dashboard
+
+Superadministrador --> config
+
+Stripe --> pago
+
+facturas ..> enviar : <<include>>
+recordatorio ..> pago : <<extend>>
+@enduml
