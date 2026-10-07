@@ -1,0 +1,32 @@
+@startuml
+Class Cliente{
+- String ID
+# String ID2
++ String ID3
+
++ void setID(String Identificador)
++ String getID()
+
+}
+Class ClientePremium {
+- int tarifa
++ int getTarifa()
++ void setTarifa(int valor)
+}
+Cliente <|-- ClientePremium : hereda
+
+Class Contable{
+- String nombre
++ setAttr1(int valor)
+}
+
+Cliente *-- Contable
+Interface ClienteInterfaz
+Abstract ClienteAbstracto
+
+Class ImplementacionClienteInterfaz
+
+ClienteInterfaz <|.. ImplementacionClienteInterfaz : implements
+
+
+@enduml
