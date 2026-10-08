@@ -1,0 +1,21 @@
+@startuml
+title Casos de uso - Seguimiento de cobros
+left to right direction
+
+actor Stripe
+actor Lector
+
+rectangle "Seguimiento de cobros" {
+  usecase "Chequear pagos" as chequear
+  usecase "Seguimiento de impago" as impago
+  usecase "Avisar de cobro al empleado" as aviso
+}
+
+Stripe --> chequear
+
+impago ..> chequear : <<extend>>
+aviso ..> chequear : <<extend>>
+
+impago -- Lector
+aviso -- Lector
+@enduml
