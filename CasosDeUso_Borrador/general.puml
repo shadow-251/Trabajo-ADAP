@@ -1,0 +1,34 @@
+@startuml
+title Casos de uso - Vista general
+left to right direction
+
+actor Lector
+actor Administrador
+actor Superadministrador
+actor Stripe
+
+Lector <|-- Administrador
+Administrador <|-- Superadministrador
+
+rectangle "App de facturación Turbine" {
+  usecase "Iniciar sesión" as login
+  usecase "Registro de clientes" as clientes
+  usecase "Facturación" as facturacion
+  usecase "Seguimiento de cobros" as cobros
+  usecase "Gestionar usuarios" as usuarios
+  usecase "Ver dashboard" as dashboard
+  usecase "Configurar sistema" as config
+}
+
+Lector --> login
+Lector --> clientes
+Lector --> facturacion
+Lector -- cobros
+
+Administrador --> usuarios
+Administrador --> dashboard
+
+Superadministrador --> config
+
+Stripe --> cobros
+@enduml
