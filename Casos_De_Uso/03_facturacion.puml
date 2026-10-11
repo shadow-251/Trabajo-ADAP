@@ -1,0 +1,29 @@
+@startuml
+title Casos de uso - Facturación
+left to right direction
+
+actor "Usuario operativo" as Usuario
+actor Administrador
+actor Temporizador as Reloj
+Usuario <|-- Administrador
+
+rectangle "App de facturación Turbine" {
+  usecase "CU10 Crear factura puntual" as CU10
+  usecase "CU11 Generar facturas recurrentes" as CU11
+  usecase "CU12 Emitir factura" as CU12
+  usecase "CU13 Enviar factura al cliente" as CU13
+  usecase "CU14 Solicitar aprobación" as CU14
+  usecase "CU15 Consultar y descargar facturas" as CU15
+  usecase "CU16 Rectificar factura" as CU16
+}
+
+Usuario --> CU10
+Usuario --> CU12
+Usuario --> CU15
+Administrador --> CU16
+Reloj --> CU11
+
+CU11 ..> CU12 : <<include>>
+CU12 ..> CU13 : <<include>>
+CU14 ..> CU12 : <<extend>>
+@enduml
