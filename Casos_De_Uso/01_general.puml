@@ -1,0 +1,49 @@
+@startuml
+title Casos de uso - Vista general
+left to right direction
+
+actor "Usuario operativo" as Usuario
+actor Administrador
+actor Superadministrador
+actor Temporizador as Reloj
+actor "Fuente de pagos" as Pagos
+actor "Sistema externo" as API
+
+Usuario <|-- Administrador
+Administrador <|-- Superadministrador
+
+rectangle "App de facturación Turbine" {
+  package "Clientes" {
+    usecase "CU02 Dar de alta cliente" as CU02
+    usecase "CU05 Crear suscripción" as CU05
+    usecase "CU07 Dar de baja cliente" as CU07
+    usecase "CU08 Consultar deuda pendiente" as CU08
+  }
+  package "Facturación" {
+    usecase "CU10 Crear factura puntual" as CU10
+    usecase "CU11 Generar facturas recurrentes" as CU11
+    usecase "CU12 Emitir factura" as CU12
+  }
+  package "Cobros" {
+    usecase "CU17 Registrar pago" as CU17
+    usecase "CU19 Enviar recordatorios" as CU19
+  }
+  package "Administración" {
+    usecase "CU22 Aprobar solicitudes" as CU22
+    usecase "CU26 Configurar sistema" as CU26
+  }
+}
+
+Usuario --> CU02
+Usuario --> CU05
+Usuario --> CU07
+Usuario --> CU10
+Usuario --> CU12
+Administrador --> CU22
+Superadministrador --> CU26
+Reloj --> CU11
+Reloj --> CU19
+Pagos --> CU17
+API --> CU07
+API --> CU08
+@enduml

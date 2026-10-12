@@ -1,0 +1,22 @@
+@startuml
+title Casos de uso - Cobros
+left to right direction
+
+actor "Fuente de pagos" as Pagos
+actor Temporizador as Reloj
+actor "Usuario operativo" as Usuario
+
+rectangle "App de facturación Turbine" {
+  usecase "CU17 Registrar pago" as CU17
+  usecase "CU18 Conciliar pago manualmente" as CU18
+  usecase "CU19 Enviar recordatorios" as CU19
+  usecase "CU20 Pausar recordatorios" as CU20
+}
+
+Pagos --> CU17
+Reloj --> CU19
+Usuario --> CU18
+Usuario --> CU20
+
+CU18 ..> CU17 : <<extend>>
+@enduml
