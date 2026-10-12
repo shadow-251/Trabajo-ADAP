@@ -1,0 +1,27 @@
+@startuml diagrama_3_cobros
+title Casos de uso · 3/4 · Cobros
+
+left to right direction
+
+actor "Temporizador" as TMP
+actor "Pasarela de cobro\n(Stripe simulado, banco)" as PAS
+actor "Usuario operativo" as UO
+actor "Servicio de mensajería\n(email, WhatsApp simulado)" as MSG
+
+rectangle "Sistema de facturación y cobros" {
+  usecase "CU-13\nRegistrar cobro" as CU13
+  usecase "CU-14\nEnviar recordatorios\nde cobro" as CU14
+  usecase "CU-15\nConciliar cobro\nmanualmente" as CU15
+  usecase "CU-16\nGestionar incidencia\nde facturación" as CU16
+}
+
+PAS -- CU13
+TMP -- CU14
+CU14 -- MSG
+UO -- CU15
+UO -- CU16
+CU16 -- MSG
+
+CU15 ..> CU16 : <<extend>>
+
+@enduml
