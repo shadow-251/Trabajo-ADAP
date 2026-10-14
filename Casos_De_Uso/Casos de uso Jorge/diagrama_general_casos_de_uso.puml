@@ -1,0 +1,55 @@
+@startuml diagrama_general_casos_de_uso
+title Casos de uso · Visión general
+
+left to right direction
+
+actor "Servicio de mensajería\n(email, WhatsApp simulado)" as MSG
+actor "Sistema externo\n(Brain, vía API)" as EXT
+actor "Administrador" as ADM
+actor "Temporizador" as TMP
+actor "Usuario operativo" as UO
+actor "Pasarela de cobro\n(Stripe simulado, banco)" as PAS
+actor "Superadministrador" as SA
+
+ADM --|> UO
+SA --|> ADM
+
+rectangle "Sistema de facturación y cobros" {
+  package "Clientes y relación comercial" {
+    usecase "CU-01 Gestionar cliente" as CU01
+    usecase "CU-06 Tramitar baja" as CU06
+    usecase "CU-03 Gestionar suscripción" as CU03
+  }
+  package "Facturación" {
+    usecase "CU-08 Crear factura puntual" as CU08
+    usecase "CU-07 Generar facturas recurrentes" as CU07
+    usecase "CU-12 Resolver solicitud de aprobación" as CU12
+  }
+  package "Cobros" {
+    usecase "CU-13 Registrar cobro" as CU13
+    usecase "CU-14 Enviar recordatorios de cobro" as CU14
+    usecase "CU-15 Conciliar cobro manualmente" as CU15
+  }
+  package "Acceso, seguimiento y administración" {
+    usecase "CU-23 Configurar sistema" as CU23
+    usecase "CU-21 Gestionar usuarios" as CU21
+    usecase "CU-20 Consultar dashboard financiero" as CU20
+  }
+}
+
+TMP --> CU07
+SA --> CU23
+UO --> CU08
+ADM --> CU12
+ADM --> CU20
+MSG --> CU14
+EXT --> CU06
+UO --> CU06
+UO --> CU01
+ADM --> CU21
+UO --> CU15
+TMP --> CU14
+UO --> CU03
+PAS --> CU13
+
+@enduml
