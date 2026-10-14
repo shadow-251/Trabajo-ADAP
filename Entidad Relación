@@ -1,0 +1,44 @@
+@startuml
+title Entidad relación
+
+entity CLIENTE {
+* id cliente : INT <<PK>>
+--
+nombre_empresa : VARCHAR
+cif_empresa : VARCHAR
+}
+
+entity FACTURA {
+* id_factura : VARCHAR <<PK>>
+--
+importe : INT
+fecha : DATE
+--
+id_cliente : INT <<FK>>
+}
+
+CLIENTE ||--o{ FACTURA
+
+entity "USUARIO" as User{
+* id_usuario : VARCHAR <<PK>>
+--
+nombre : VARCHAR
+rango : VARCHAR
+
+}
+
+CLIENTE }|-|| User
+
+entity "RECORDATORIO" as remb{
+*id_recodatorio : VARCHAR <<PK>>
+--
+fecha : DATE
+id_factura : VARCHAR <<FK>>
+id_cliente : VARCHAR <<FK>>
+}
+
+CLIENTE ||--o{ remb
+FACTURA ||--o{ remb
+@enduml
+
+
