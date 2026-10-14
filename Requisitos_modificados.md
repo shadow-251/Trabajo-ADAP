@@ -1,6 +1,7 @@
 # Documento de Especificación de Requisitos de Software
 
-**Proyecto:** Sistema Interno de Facturación y Seguimiento de Cobros (Turbine)
+**Proyecto:** Sistema Interno de Facturación y Seguimiento de Cobros (TurbineH)
+
 **Asignatura:** Análisis y Diseño de Aplicaciones / Ingeniería de Requisitos
 
 ### 1. Requisitos de Negocio (BR)
