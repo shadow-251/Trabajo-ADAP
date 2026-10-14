@@ -1,5 +1,5 @@
 @startuml diagrama_4_seguimiento_administracion
-title Casos de uso · 4/4 · Acceso, seguimiento y administración
+title Acceso, seguimiento y administración
 
 left to right direction
 
@@ -10,16 +10,14 @@ actor "Superadministrador" as SA
 ADM --|> UO
 SA --|> ADM
 
-rectangle "Sistema de facturación y cobros" {
-  usecase "CU-17\nIniciar sesión" as CU17
-  usecase "CU-18\nConsultar trabajo\npendiente" as CU18
-  usecase "CU-19\nConsultar informes" as CU19
-  usecase "CU-20\nConsultar dashboard\nfinanciero" as CU20
-  usecase "CU-21\nGestionar usuarios" as CU21
-  usecase "CU-22\nAsignar clientes" as CU22
-  usecase "CU-23\nConfigurar sistema" as CU23
-  usecase "CU-24\nConsultar auditoría" as CU24
-}
+usecase "CU-17\nIniciar sesión" as CU17
+usecase "CU-18\nConsultar trabajo\npendiente" as CU18
+usecase "CU-19\nConsultar informes" as CU19
+usecase "CU-20\nConsultar dashboard\nfinanciero" as CU20
+usecase "CU-21\nGestionar usuarios" as CU21
+usecase "CU-22\nAsignar clientes" as CU22
+usecase "CU-23\nConfigurar sistema" as CU23
+usecase "CU-24\nConsultar auditoría" as CU24
 
 UO -- CU17
 UO -- CU18

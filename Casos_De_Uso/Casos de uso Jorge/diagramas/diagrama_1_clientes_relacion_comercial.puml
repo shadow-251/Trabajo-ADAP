@@ -1,5 +1,5 @@
-@startuml diagrama_1_clientes_relacion_comercial
-title Casos de uso · 1/4 · Clientes y relación comercial
+@startuml
+title Clientes y relación comercial
 
 left to right direction
 
@@ -7,15 +7,14 @@ actor "Usuario operativo" as UO
 actor "Temporizador" as TMP
 actor "Sistema externo\n(Brain, vía API)" as EXT
 
-rectangle "Sistema de facturación y cobros" {
-  usecase "CU-11\nSolicitar aprobación\n(diagrama 2)" as CU11
-  usecase "CU-01\nGestionar cliente" as CU01
-  usecase "CU-02\nImportar clientes\ndesde CSV" as CU02
-  usecase "CU-03\nGestionar suscripción" as CU03
-  usecase "CU-04\nPausar / reanudar\nsuscripción" as CU04
-  usecase "CU-05\nRevisar rango de\ntarifa anual" as CU05
-  usecase "CU-06\nTramitar baja" as CU06
-}
+usecase "CU-11\nSolicitar aprobación\n(diagrama 2)" as CU11
+usecase "CU-01\nGestionar cliente" as CU01
+usecase "CU-02\nImportar clientes\ndesde CSV" as CU02
+usecase "CU-03\nGestionar suscripción" as CU03
+usecase "CU-04\nPausar / reanudar\nsuscripción" as CU04
+usecase "CU-05\nRevisar rango de\ntarifa anual" as CU05
+usecase "CU-06\nTramitar baja" as CU06
+
 
 UO -- CU01
 UO -- CU02
@@ -28,5 +27,4 @@ CU06 -- EXT
 
 CU03 ..> CU11 : <<extend>>
 CU05 ..> CU11 : <<extend>>
-
 @enduml

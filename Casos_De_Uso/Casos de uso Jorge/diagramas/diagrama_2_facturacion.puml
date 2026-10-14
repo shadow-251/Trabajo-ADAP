@@ -1,5 +1,5 @@
 @startuml diagrama_2_facturacion
-title Casos de uso · 2/4 · Facturación
+title Facturación
 
 left to right direction
 
@@ -10,15 +10,13 @@ actor "Servicio de mensajería\n(email, WhatsApp simulado)" as MSG
 
 ADM --|> UO
 
-rectangle "Sistema de facturación y cobros" {
-  usecase "CU-07\nGenerar facturas\nrecurrentes" as CU07
-  usecase "CU-08\nCrear factura puntual" as CU08
-  usecase "CU-09\nEmitir factura" as CU09
-  usecase "CU-10\nEmitir factura\nrectificativa" as CU10
-  usecase "CU-12\nResolver solicitud\nde aprobación" as CU12
-  usecase "CU-16\nGestionar incidencia\nde facturación\n(diagrama 3)" as CU16
-  usecase "CU-11\nSolicitar aprobación" as CU11
-}
+usecase "CU-07\nGenerar facturas\nrecurrentes" as CU07
+usecase "CU-08\nCrear factura puntual" as CU08
+usecase "CU-09\nEmitir factura" as CU09
+usecase "CU-10\nEmitir factura\nrectificativa" as CU10
+usecase "CU-12\nResolver solicitud\nde aprobación" as CU12
+usecase "CU-16\nGestionar incidencia\nde facturación\n(diagrama 3)" as CU16
+usecase "CU-11\nSolicitar aprobación" as CU11
 
 TMP -- CU07
 UO -- CU08
