@@ -1,7 +1,5 @@
 # Especificación de casos de uso
 
-**Turbine · Sistema interno de facturación y cobros · Entrega 1**
-
 Los casos de uso que inicia una persona tienen una precondición común: el usuario ha iniciado sesión (CU-17) y solo actúa sobre los clientes que puede ver (un usuario operativo, los que tiene asignados o delegados, CU-22).
 
 ## Actores
@@ -12,7 +10,7 @@ Los casos de uso que inicia una persona tienen una precondición común: el usua
 | Administrador | Hereda del usuario operativo. Ve todos los clientes, asigna y aprueba. |
 | Superadministrador | Hereda del administrador. Mantiene la configuración global y consulta la auditoría. |
 | Temporizador | Lanza los procesos programados: facturación mensual, recordatorios diarios y campaña de revisión anual. |
-| Pasarela de cobro | Stripe simulado (más adelante, banco o Revolut). Comunica los cobros. |
+| Pasarela de cobro | Stripe simulado. Comunica los cobros. |
 | Sistema externo | Brain u otro sistema que usa la API: consulta deudas y comunica bajas. |
 | Servicio de mensajería | Actor secundario: correo electrónico y WhatsApp simulado. |
 
@@ -20,19 +18,19 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 
 ## Diagramas
 
-![Diagrama 1/4 · Clientes y relación comercial](diagramas/diagrama_1_clientes_relacion_comercial.png)
+![Diagrama 1/4 - Clientes y relación comercial](Diagramas-PNG/diagrama_1_clientes_relacion_comercial.png)
 
-![Diagrama 2/4 · Facturación](diagramas/diagrama_2_facturacion.png)
+![Diagrama 2/4 - Facturación](Diagramas-PNG/diagrama_2_facturacion.png)
 
-![Diagrama 3/4 · Cobros](diagramas/diagrama_3_cobros.png)
+![Diagrama 3/4 - Cobros](Diagramas-PNG/diagrama_3_cobros.png)
 
-![Diagrama 4/4 · Acceso, seguimiento y administración](diagramas/diagrama_4_seguimiento_administracion.png)
+![Diagrama 4/4 - Acceso, seguimiento y administración](Diagramas-PNG/diagrama_4_seguimiento_administracion.png)
 
 ---
 
-## Diagrama 1 · Clientes y relación comercial
+## Diagrama 1 - Clientes y relación comercial
 
-### CU-01 · Gestionar cliente
+### CU-01: Gestionar cliente
 
 **Caso de uso:** Gestionar cliente.\
 **ID:** CU-01\
@@ -71,7 +69,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **2a.** El identificador fiscal ya existe: el sistema avisa del posible duplicado. Si es un cliente dado de baja que vuelve, el usuario reactiva su ficha con su histórico en lugar de crear otra; el sistema nunca fusiona fichas por su cuenta.
 - **4a.** No hay contacto de facturación: el sistema guarda la ficha, la marca como incompleta para facturar e indica qué falta.
 
-### CU-02 · Importar clientes desde CSV
+### CU-02: Importar clientes desde CSV
 
 **Caso de uso:** Importar clientes desde CSV.\
 **ID:** CU-02\
@@ -112,7 +110,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **6a.** El fichero es muy grande: el sistema hace la importación en segundo plano y avisa cuando termina.
 - **\*a.** El usuario cancela antes de confirmar: el sistema no importa nada.
 
-### CU-03 · Gestionar suscripción
+### CU-03: Gestionar suscripción
 
 **Caso de uso:** Gestionar suscripción.\
 **ID:** CU-03\
@@ -152,7 +150,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **5a.** El cambio está sujeto a aprobación (descuento, primer mes gratis, precio pactado o facturación sin prorrateo): se ejecuta CU-11 Solicitar aprobación y el cambio se aplica al aprobarse (CU-12).
 - **6a.** La fecha de inicio es futura: el sistema deja la suscripción pendiente de activación hasta esa fecha.
 
-### CU-04 · Pausar / reanudar suscripción
+### CU-04: Pausar / reanudar suscripción
 
 **Caso de uso:** Pausar / reanudar suscripción.\
 **ID:** CU-04\
@@ -194,7 +192,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **6a.** La política configurada no exige confirmación: el sistema reanuda la suscripción en esa fecha y avisa al responsable.
 - **7a.** El cliente pide alargar la pausa: el usuario indica la nueva fecha prevista y el sistema vuelve a avisar cuando llegue.
 
-### CU-05 · Revisar rango de tarifa anual
+### CU-05: Revisar rango de tarifa anual
 
 **Caso de uso:** Revisar rango de tarifa anual.\
 **ID:** CU-05\
@@ -236,7 +234,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **4b.** El dato no está disponible: la revisión queda pendiente y sigue en el trabajo pendiente del usuario.
 - **6a.** El rango propuesto es distinto del actual: se ejecuta CU-11 Solicitar aprobación. Al aprobarse (CU-12), el sistema aplica la nueva tarifa desde su fecha de efecto y registra quién la aprobó, cuándo, y el precio anterior y el nuevo.
 
-### CU-06 · Tramitar baja
+### CU-06: Tramitar baja
 
 **Caso de uso:** Tramitar baja.\
 **ID:** CU-06\
@@ -278,9 +276,9 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 
 ---
 
-## Diagrama 2 · Facturación
+## Diagrama 2 - Facturación
 
-### CU-07 · Generar facturas recurrentes
+### CU-07: Generar facturas recurrentes
 
 **Caso de uso:** Generar facturas recurrentes.\
 **ID:** CU-07\
@@ -321,7 +319,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **5a.** La emisión falla (por ejemplo, falta el contacto de facturación): la factura queda en borrador, el sistema avisa al responsable y sigue con la siguiente suscripción.
 - **5b.** La factura queda pendiente de aprobación: el sistema lo anota en el resumen y continúa.
 
-### CU-08 · Crear factura puntual
+### CU-08: Crear factura puntual
 
 **Caso de uso:** Crear factura puntual.\
 **ID:** CU-08\
@@ -362,7 +360,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **6a.** El usuario deja la emisión para más tarde: el borrador se conserva sin número.
 - **\*a.** Otro usuario modificó el mismo borrador a la vez: el sistema detecta el conflicto y no sobrescribe sus cambios.
 
-### CU-09 · Emitir factura
+### CU-09: Emitir factura
 
 **Caso de uso:** Emitir factura.\
 **ID:** CU-09\
@@ -404,7 +402,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **5a.** El envío falla o rebota: el sistema registra el fallo y se ejecuta CU-16 Gestionar incidencia de facturación, que avisa al responsable.
 - **\*a.** Error inesperado en los pasos 3 o 4: el sistema deshace la emisión y la factura sigue en borrador sin consumir número.
 
-### CU-10 · Emitir factura rectificativa
+### CU-10: Emitir factura rectificativa
 
 **Caso de uso:** Emitir factura rectificativa.\
 **ID:** CU-10\
@@ -441,7 +439,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **1a.** La factura sigue en borrador: el sistema indica que se corrige directamente, sin rectificativa.
 - **6a.** El importe supera el umbral de aprobación: la rectificativa queda pendiente de aprobación (CU-09, extensión 2a) y se emite cuando se aprueba.
 
-### CU-11 · Solicitar aprobación
+### CU-11: Solicitar aprobación
 
 **Caso de uso:** Solicitar aprobación.\
 **ID:** CU-11\
@@ -476,7 +474,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **2a.** Ya hay una solicitud pendiente para esa operación: el sistema no crea otra.
 - **3a.** El aprobador está ausente: el sistema asigna la solicitud a su suplente.
 
-### CU-12 · Resolver solicitud de aprobación
+### CU-12: Resolver solicitud de aprobación
 
 **Caso de uso:** Resolver solicitud de aprobación.\
 **ID:** CU-12\
@@ -514,9 +512,9 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 
 ---
 
-## Diagrama 3 · Cobros
+## Diagrama 3 - Cobros
 
-### CU-13 · Registrar cobro
+### CU-13: Registrar cobro
 
 **Caso de uso:** Registrar cobro.\
 **ID:** CU-13\
@@ -555,7 +553,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **3b.** El importe no coincide (pago parcial o de más): el sistema propone la asociación sin marcar la factura como pagada y la deja para conciliación manual.
 - **4a.** La política configurada exige validación humana: el sistema deja la conciliación propuesta para CU-15.
 
-### CU-14 · Enviar recordatorios de cobro
+### CU-14: Enviar recordatorios de cobro
 
 **Caso de uso:** Enviar recordatorios de cobro.\
 **ID:** CU-14\
@@ -593,7 +591,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **3a.** El aviso cae en festivo o fin de semana: el sistema lo traslada al siguiente día laborable.
 - **4a.** El envío falla: el sistema lo registra, avisa al responsable y sigue con la siguiente factura.
 
-### CU-15 · Conciliar cobro manualmente
+### CU-15: Conciliar cobro manualmente
 
 **Caso de uso:** Conciliar cobro manualmente.\
 **ID:** CU-15\
@@ -632,7 +630,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **4a.** El importe no cuadra (pago parcial o de más) o el movimiento no corresponde a ninguna factura: el sistema no marca la factura como pagada, registra la diferencia y se ejecuta CU-16 Gestionar incidencia de facturación.
 - **5a.** Otro usuario ya concilió el movimiento: el sistema no aplica la segunda conciliación y avisa.
 
-### CU-16 · Gestionar incidencia de facturación
+### CU-16: Gestionar incidencia de facturación
 
 **Caso de uso:** Gestionar incidencia de facturación.\
 **ID:** CU-16\
@@ -676,9 +674,9 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 
 ---
 
-## Diagrama 4 · Acceso, seguimiento y administración
+## Diagrama 4 - Acceso, seguimiento y administración
 
-### CU-17 · Iniciar sesión
+### CU-17: Iniciar sesión
 
 **Caso de uso:** Iniciar sesión.\
 **ID:** CU-17\
@@ -718,7 +716,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **\*b.** Pasa el tiempo máximo de inactividad: el sistema cierra la sesión.
 - **\*c.** Un administrador desactiva la cuenta (CU-21): el sistema invalida sus sesiones activas.
 
-### CU-18 · Consultar trabajo pendiente
+### CU-18: Consultar trabajo pendiente
 
 **Caso de uso:** Consultar trabajo pendiente.\
 **ID:** CU-18\
@@ -754,7 +752,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **2a.** El usuario es administrador: el sistema incluye todos los clientes.
 - **2b.** No hay nada pendiente: el sistema lo indica.
 
-### CU-19 · Consultar informes
+### CU-19: Consultar informes
 
 **Caso de uso:** Consultar informes.\
 **ID:** CU-19\
@@ -791,7 +789,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **2a.** El informe es pesado: el sistema lo genera en segundo plano y avisa cuando está listo.
 - **6a.** La exportación es masiva: el sistema la marca para que la revise un administrador.
 
-### CU-20 · Consultar dashboard financiero
+### CU-20: Consultar dashboard financiero
 
 **Caso de uso:** Consultar dashboard financiero.\
 **ID:** CU-20\
@@ -828,7 +826,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **2a.** No hay datos en el periodo: el sistema muestra los indicadores a cero.
 - **5a.** La cifra incluye facturas rectificadas: el desglose muestra la rectificativa junto a la factura original.
 
-### CU-21 · Gestionar usuarios
+### CU-21: Gestionar usuarios
 
 **Caso de uso:** Gestionar usuarios.\
 **ID:** CU-21\
@@ -864,7 +862,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **1b.** El administrador desactiva a un usuario que deja Turbine: el sistema invalida sus sesiones activas, conserva su rastro y avisa de los clientes que se quedan sin responsable para reasignarlos (CU-22).
 - **2a.** El correo no es del dominio autorizado o ya existe: el sistema rechaza el alta e indica el motivo.
 
-### CU-22 · Asignar clientes
+### CU-22: Asignar clientes
 
 **Caso de uso:** Asignar clientes.\
 **ID:** CU-22\
@@ -903,7 +901,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **2b.** El nuevo responsable no tiene una cuenta activa: el sistema no permite la asignación.
 - **5a.** Otro administrador ha cambiado a la vez el responsable de algún cliente: el sistema no sobrescribe ese cambio y lo indica en el resultado.
 
-### CU-23 · Configurar sistema
+### CU-23: Configurar sistema
 
 **Caso de uso:** Configurar sistema.\
 **ID:** CU-23\
@@ -940,7 +938,7 @@ El cliente y la gestoría no son actores: reciben facturas y exportaciones, pero
 - **4a.** El valor no es válido o una plantilla usa variables inexistentes: el sistema indica el error y vuelve al paso 3.
 - **5a.** El superadministrador pide un envío de prueba de una plantilla: el sistema la envía solo a su propio correo.
 
-### CU-24 · Consultar auditoría
+### CU-24: Consultar auditoría
 
 **Caso de uso:** Consultar auditoría.\
 **ID:** CU-24\
