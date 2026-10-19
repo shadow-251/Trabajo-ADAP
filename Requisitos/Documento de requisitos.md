@@ -127,3 +127,7 @@
   - Descripción: El sistema debe asegurar la exactitud matemática en todos los importes, impuestos y totales, prohibiendo el uso de tipos de datos de coma flotante (floats) que generen descuadres por redondeos.
   - Métrica / Criterio de aceptación: 0 céntimos de discrepancia entre los totales calculados en la base de datos, el PDF generado y el cuadro de mando para el 100% de las facturas.
   - Método de verificación: Análisis estático de código para comprobar el uso de tipos de dato apropiados (ej. Decimal) y pruebas unitarias con sumas de precisión.
+  - NFR11. Seguridad y Ciclo de Vida de Sesiones.
+  - Descripción: El sistema protegerá las sesiones activas, implementando expiración automática por inactividad y revocación de acceso inmediata si se desactiva un usuario.
+  - Métrica / Criterio de aceptación: Cierre de sesión automático tras un periodo de inactividad configurable y denegación de acceso al 100% de las sesiones activas de usuarios desactivados administrativamente.
+  - Método de verificación: Pruebas End-to-End (E2E) simulando tiempos de inactividad e invalidación manual del estado de usuario en la base de datos.
