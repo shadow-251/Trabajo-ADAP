@@ -123,11 +123,11 @@
   - Descripción: El sistema debe detectar conflictos y evitar la sobrescritura silenciosa de datos cuando dos o más usuarios intenten modificar simultáneamente la misma entidad (ej. una factura o un cliente).
   - Métrica / Criterio de aceptación: El 100% de los conflictos de edición simultánea deberán ser bloqueados o notificados al segundo usuario antes de guardar.
   - Método de verificación: Pruebas de integración automatizadas simulando peticiones de guardado concurrentes al mismo recurso.
-  - NFR10. Precisión Decimal y Consistencia Financiera.
+- NFR10. Precisión Decimal y Consistencia Financiera.
   - Descripción: El sistema debe asegurar la exactitud matemática en todos los importes, impuestos y totales, prohibiendo el uso de tipos de datos de coma flotante (floats) que generen descuadres por redondeos.
   - Métrica / Criterio de aceptación: 0 céntimos de discrepancia entre los totales calculados en la base de datos, el PDF generado y el cuadro de mando para el 100% de las facturas.
   - Método de verificación: Análisis estático de código para comprobar el uso de tipos de dato apropiados (ej. Decimal) y pruebas unitarias con sumas de precisión.
-  - NFR11. Seguridad y Ciclo de Vida de Sesiones.
+- NFR11. Seguridad y Ciclo de Vida de Sesiones.
   - Descripción: El sistema protegerá las sesiones activas, implementando expiración automática por inactividad y revocación de acceso inmediata si se desactiva un usuario.
   - Métrica / Criterio de aceptación: Cierre de sesión automático tras un periodo de inactividad configurable y denegación de acceso al 100% de las sesiones activas de usuarios desactivados administrativamente.
   - Método de verificación: Pruebas End-to-End (E2E) simulando tiempos de inactividad e invalidación manual del estado de usuario en la base de datos.
