@@ -19,6 +19,7 @@
 - UR4. El gestor podrá visualizar el estado de los cobros en tiempo real, si reciben transferencias bancarias asignar ese pago a una factura pendiente y gestionar disputas o incidencias con el cliente.
 - UR5. El superadministrador podrá gestionar los usuarios internos, asignar carteras de clientes a responsables y configurar delegaciones temporales por ausencias o vacaciones.
 - UR6. El administrador dispondrá de un cuadro de mando financiero con indicadores clave y la capacidad de exportar informes contables y paquetes periódicos para la gestoría.
+- UR7. El usuario podrá iniciar sesión utilizando exclusivamente su email del dominio corporativo y dispondrá de un mecanismo para recuperar su contraseña en caso de olvido.
 
 ### 3. Requisitos Funcionales (FR)
 
@@ -84,6 +85,8 @@
   - Dependencias: FR26.
 - FR33. El sistema expondrá endpoints documentados para permitir que aplicaciones autorizadas consulten el estado de deuda de un cliente y comuniquen solicitudes de baja.
   - Dependencias: FR3, FR24.
+- FR34. El sistema permitirá a los usuarios solicitar el restablecimiento de su contraseña, generando y enviando al correo corporativo un enlace de recuperación temporal con caducidad configurada.
+  - Dependencias: FR26
 
 ### 4. Requisitos No Funcionales (NFR)
 
