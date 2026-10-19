@@ -1,6 +1,7 @@
 # Documento de Especificación de Requisitos de Software
 
 **Proyecto:** Sistema Interno de Facturación y Seguimiento de Cobros (Turbine)
+
 **Asignatura:** Análisis y Diseño de Aplicaciones / Ingeniería de Requisitos
 
 ### 1. Requisitos de Negocio (BR)
@@ -118,3 +119,15 @@
   - Descripción: El sistema debe contar con mecanismos para restaurar la información en caso de fallo crítico en la infraestructura.
   - Métrica / Criterio de aceptación: Copias de seguridad automáticas diarias con un tiempo máximo de recuperación de 2 horas y un punto de recuperación de pérdidas de un máximo de 24 horas.
   - Método de verificación: Simulación completa de restauración del sistema desde un archivo de backup en un entorno de prueba aislado.
+- NFR9. Control de Concurrencia.
+  - Descripción: El sistema debe detectar conflictos y evitar la sobrescritura silenciosa de datos cuando dos o más usuarios intenten modificar simultáneamente la misma entidad (ej. una factura o un cliente).
+  - Métrica / Criterio de aceptación: El 100% de los conflictos de edición simultánea deberán ser bloqueados o notificados al segundo usuario antes de guardar.
+  - Método de verificación: Pruebas de integración automatizadas simulando peticiones de guardado concurrentes al mismo recurso.
+- NFR10. Precisión Decimal y Consistencia Financiera.
+  - Descripción: El sistema debe asegurar la exactitud matemática en todos los importes, impuestos y totales, prohibiendo el uso de tipos de datos de coma flotante (floats) que generen descuadres por redondeos.
+  - Métrica / Criterio de aceptación: 0 céntimos de discrepancia entre los totales calculados en la base de datos, el PDF generado y el cuadro de mando para el 100% de las facturas.
+  - Método de verificación: Análisis estático de código para comprobar el uso de tipos de dato apropiados (ej. Decimal) y pruebas unitarias con sumas de precisión.
+- NFR11. Seguridad y Ciclo de Vida de Sesiones.
+  - Descripción: El sistema protegerá las sesiones activas, implementando expiración automática por inactividad y revocación de acceso inmediata si se desactiva un usuario.
+  - Métrica / Criterio de aceptación: Cierre de sesión automático tras un periodo de inactividad configurable y denegación de acceso al 100% de las sesiones activas de usuarios desactivados administrativamente.
+  - Método de verificación: Pruebas End-to-End (E2E) simulando tiempos de inactividad e invalidación manual del estado de usuario en la base de datos.
