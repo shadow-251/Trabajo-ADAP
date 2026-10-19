@@ -1,6 +1,7 @@
 # Documento de Especificación de Requisitos de Software
 
 **Proyecto:** Sistema Interno de Facturación y Seguimiento de Cobros (Turbine)
+
 **Asignatura:** Análisis y Diseño de Aplicaciones / Ingeniería de Requisitos
 
 ### 1. Requisitos de Negocio (BR)
@@ -118,3 +119,7 @@
   - Descripción: El sistema debe contar con mecanismos para restaurar la información en caso de fallo crítico en la infraestructura.
   - Métrica / Criterio de aceptación: Copias de seguridad automáticas diarias con un tiempo máximo de recuperación de 2 horas y un punto de recuperación de pérdidas de un máximo de 24 horas.
   - Método de verificación: Simulación completa de restauración del sistema desde un archivo de backup en un entorno de prueba aislado.
+- NFR9. Control de Concurrencia.
+  - Descripción: El sistema debe detectar conflictos y evitar la sobrescritura silenciosa de datos cuando dos o más usuarios intenten modificar simultáneamente la misma entidad (ej. una factura o un cliente).
+  - Métrica / Criterio de aceptación: El 100% de los conflictos de edición simultánea deberán ser bloqueados o notificados al segundo usuario antes de guardar.
+  - Método de verificación: Pruebas de integración automatizadas simulando peticiones de guardado concurrentes al mismo recurso.
