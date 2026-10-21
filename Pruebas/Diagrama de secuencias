@@ -1,0 +1,27 @@
+@startuml
+actor Usuario
+participant InterfazLogin
+participant ControladorAuth
+database Database
+participant ServicioEmail
+
+Usuario-->InterfazLogin : 1: iniciarSesión(usuario, contraseña)
+activate InterfazLogin
+InterfazLogin -> ControladorAuth : 2: Autentificar(usuario, contraseña)
+activate ControladorAuth
+ControladorAuth->Database : 3: obtenerUsuario(usuario)
+activate Database
+create participant usuario
+Database --> usuario : 4: CrearUsuario
+Database --> ControladorAuth : Usuario
+deactivate Database
+ControladorAuth-->usuario: 5: validarContraseña(contraseña) 
+usuario-->ControladorAuth: True
+deactivate usuario
+ControladorAuth-->ServicioEmail: 6: enviarNotificación(usuario, email)
+ControladorAuth -->InterfazLogin : True
+deactivate ControladorAuth
+InterfazLogin-->Usuario : True
+deactivate InterfazLogin
+
+@enduml
