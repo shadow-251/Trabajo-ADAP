@@ -1,0 +1,33 @@
+@startuml
+package "Autentificación de Clientes"{
+
+[Interfaz Web] as IW
+[Autentificación] as auth
+}
+
+package "Gestión de CLientes"{
+[Gestión de Clientes] as clientes
+[Facturación] as fact
+[Notificaciones] as noti
+}
+
+package "Registro del Sistema"{
+[Registro] as reg
+}
+
+package "Persistencia"{
+[Base de Datos] as BD
+}
+
+IW -(0-- auth : IAuth
+IW -(0- clientes : IClientes
+clientes-(0-fact : Facturación
+clientes -(0- noti : INotificaciones
+fact -(0- noti : INotificaciones
+clientes -(0- reg : ILog
+noti -(0- reg : ILog
+clientes -(0- BD : IDatabase
+noti -(0- BD : IDatabase
+fact -(0- BD : IDatabase
+
+@enduml
