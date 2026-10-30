@@ -1,0 +1,139 @@
+@startuml
+title Diagrama de clases
+
+skinparam classAttributeIconSize 0
+hide empty members
+
+' ---------- Usuarios ----------
+abstract class Usuario {
+  - id : int
+  - nombre : String
+  - email : String
+  - password : String
+  + iniciarSesion() : boolean
+}
+
+class UsuarioOperativo {
+  + consultarPendientes() : void
+}
+
+class Administrador {
+  + resolverAprobacion(s : SolicitudAprobacion) : void
+  + verDashboard() : void
+}
+
+class Superadministrador {
+  + gestionarUsuarios() : void
+  + asignarClientes() : void
+}
+
+Usuario <|-- UsuarioOperativo
+UsuarioOperativo <|-- Administrador
+Administrador <|-- Superadministrador
+
+' ---------- Clientes ----------
+class Cliente {
+  - id : int
+  - nombreComercial : String
+  - razonSocial : String
+  - nif : String
+  - domicilioFiscal : String
+  - estado : EstadoCliente
+  + darDeBaja() : void
+  + calcularDeuda() : Decimal
+}
+
+class Contacto {
+  - nombre : String
+  - email : String
+  - rol : String
+}
+
+class Suscripcion {
+  - fechaInicio : Date
+  - estado : String
+  + pausar() : void
+  + reanudar() : void
+}
+
+class RangoTarifa {
+  - minimo : Decimal
+  - maximo : Decimal
+  - cuotaMensual : Decimal
+}
+
+enum EstadoCliente {
+  PROSPECTO
+  PENDIENTE_ACTIVACION
+  ACTIVO
+  PAUSADO
+  BAJA_SOLICITADA
+  INACTIVO
+  BLOQUEADO
+}
+
+UsuarioOperativo "1" o-- "0..*" Cliente : gestiona
+Cliente "1" *-- "1..*" Contacto
+Cliente "1" -- "0..1" Suscripcion
+Suscripcion "0..*" --> "1" RangoTarifa
+
+' ---------- Facturas y cobros ----------
+class Factura {
+  - numero : String
+  - fechaEmision : Date
+  - fechaVencimiento : Date
+  - estado : EstadoFactura
+  + calcularTotal() : Decimal
+  + emitir() : void
+  + generarPDF() : void
+}
+
+class FacturaRectificativa {
+  - motivo : String
+}
+
+class LineaFactura {
+  - concepto : String
+  - cantidad : int
+  - precio : Decimal
+  - descuento : Decimal
+  - iva : Decimal
+}
+
+class Cobro {
+  - fecha : Date
+  - importe : Decimal
+  - origen : String
+  + conciliar(f : Factura) : void
+}
+
+class Recordatorio {
+  - fecha : Date
+  - tipo : String
+}
+
+class SolicitudAprobacion {
+  - motivo : String
+  - estado : String
+}
+
+enum EstadoFactura {
+  BORRADOR
+  PENDIENTE_APROBACION
+  EMITIDA
+  PAGADA
+  VENCIDA
+  EN_DISPUTA
+}
+
+Factura <|-- FacturaRectificativa
+FacturaRectificativa "0..*" --> "1" Factura : rectifica
+Cliente "1" -- "0..*" Factura
+Suscripcion "1" -- "0..*" Factura : genera
+Factura "1" *-- "1..*" LineaFactura
+Factura "0..1" -- "0..*" Cobro
+Factura "1" -- "0..*" Recordatorio
+SolicitudAprobacion "0..*" --> "1" Factura
+Administrador "1" -- "0..*" SolicitudAprobacion : resuelve
+
+@enduml
