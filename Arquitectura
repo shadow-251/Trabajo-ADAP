@@ -1,0 +1,49 @@
+@startuml
+package "Usuarios" {
+    [Usuario] as User
+    [UsuarioOperativo] as OP
+    [Administrador] as admin
+    [Superadministrador] as Sadmin
+
+    package "Cliente" {
+        [Cliente] as Cli
+        [EstadoCliente]
+        [Contacto]
+    }
+}
+
+package "Facturación" {
+   
+[FacturaRectificativa] as FacturaRe
+[LineaFactura]
+[Factura]
+    package "Facturas" {
+        
+        [Suscripción]
+        [EstadoFactura]
+        [RangoTarifa] as rng
+        [Recordatorio]
+        [Cobro]
+        [SolicitudAprobación] as SoAp
+        
+    }
+}
+
+User -(0- OP : IOP
+OP -(0- admin : IAdmin
+admin -(0- Sadmin : ISadmin
+
+OP -(0- Cli : ICliente
+Cli -(0- Contacto : IContacto
+Cli ---(0- Suscripción : ISuscripción
+
+Factura -(0- LineaFactura : ILinea
+Suscripción -(0- rng : ITarifa
+Factura --(0- Recordatorio : IRecordatorio
+Factura -(0-- Cobro : ICobro
+Factura --(0- SoAp : ISolicitud
+Factura -(0-- FacturaRe : IRectificativa
+
+Cli -(0- Factura : IFactura
+admin --(0----- SoAp : ISolicitud
+@enduml
