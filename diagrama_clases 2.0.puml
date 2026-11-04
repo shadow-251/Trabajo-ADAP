@@ -1,0 +1,166 @@
+@startuml
+title Diagrama de clases
+
+skinparam classAttributeIconSize 0
+hide empty members
+
+class FacturaRectificativa {
+  - motivo : String
+}
+
+class Factura {
+  - numero : String
+  - fechaEmision : Date
+  - fechaVencimiento : Date
+  - estado : EstadoFactura
+  + calcularTotal() : Decimal
+  + emitir() : void
+  + generarPDF() : void
+}
+
+class Recordatorio {
+  - fecha : Date
+  - tipo : String
+}
+
+class Administrador {
+  + resolverAprobacion(s : SolicitudAprobacion) : void
+  + verDashboard() : void
+  + gestionarUsuarios() : void
+  + asignarClientes() : void
+}
+
+enum EstadoFactura {
+  BORRADOR
+  PENDIENTE_APROBACION
+  EMITIDA
+  PAGADA
+  VENCIDA
+  EN_DISPUTA
+}
+
+class Contacto {
+  - nombre : String
+  - email : String
+  - rol : String
+}
+
+class Cliente {
+  - id : int
+  - nombreComercial : String
+  - razonSocial : String
+  - nif : String
+  - domicilioFiscal : String
+  - estado : EstadoCliente
+  + darDeBaja() : void
+  + calcularDeuda() : Decimal
+}
+
+class LineaFactura {
+  - concepto : String
+  - cantidad : int
+  - precio : Decimal
+  - descuento : Decimal
+  - iva : Decimal
+}
+
+class Incidencia {
+  - tipo : String
+  - descripcion : String
+  - prioridad : String
+  - estado : String
+  - fechaRevision : Date
+  - resolucion : String
+  + cerrar(resolucion : String) : void
+}
+
+class SolicitudAprobacion {
+  - motivo : String
+  - estado : String
+}
+
+class RegistroAuditoria {
+  - fechaHora : DateTime
+  - accion : String
+  - elemento : String
+  - valorAnterior : String
+  - valorNuevo : String
+}
+
+class Suscripcion {
+  - fechaInicio : Date
+  - estado : String
+  + pausar() : void
+  + reanudar() : void
+}
+
+enum EstadoCliente {
+  PROSPECTO
+  PENDIENTE_ACTIVACION
+  ACTIVO
+  PAUSADO
+  BAJA_SOLICITADA
+  INACTIVO
+  BLOQUEADO
+}
+
+class RangoTarifa {
+  - minimo : Decimal
+  - maximo : Decimal
+  - cuotaMensual : Decimal
+}
+
+class Superadministrador {
+  + configurarSistema() : void
+  + consultarAuditoria() : void
+}
+
+class SerieFacturacion {
+  - prefijo : String
+  - ultimoNumero : int
+  + siguienteNumero() : String
+}
+
+abstract class Usuario {
+  - id : int
+  - nombre : String
+  - email : String
+  - password : String
+  + iniciarSesion() : boolean
+}
+
+class Cobro {
+  - fecha : Date
+  - importe : Decimal
+  - origen : String
+  + conciliar(f : Factura) : void
+}
+
+class UsuarioOperativo {
+  + consultarPendientes() : void
+}
+
+Cliente "1" *-- "1..*" Contacto
+Cliente "1" -- "0..*" Factura
+Factura <|-- FacturaRectificativa
+Cliente "1" -- "0..*" Incidencia
+Administrador "1" -- "0..*" SolicitudAprobacion : resuelve
+UsuarioOperativo "1" o-- "0..*" Cliente : gestiona
+Suscripcion "0..*" --> "1" RangoTarifa
+SolicitudAprobacion "0..*" --> "0..1" Factura
+Factura "1" *-- "1..*" LineaFactura
+Usuario "1" -- "0..*" RegistroAuditoria : realiza
+UsuarioOperativo "1" -- "0..*" Incidencia : responsable
+Administrador <|-- Superadministrador
+Factura "0..1" -- "0..*" Incidencia
+Factura "1" -- "0..*" Recordatorio
+Cliente "1" -- "0..1" Suscripcion
+SolicitudAprobacion "0..*" --> "0..1" Suscripcion
+Factura "0..1" -- "0..*" Cobro
+Usuario <|-- UsuarioOperativo
+FacturaRectificativa "0..*" --> "1" Factura : rectifica
+Suscripcion "0..1" -- "0..*" Factura : genera
+UsuarioOperativo <|-- Administrador
+SerieFacturacion "1" -- "0..*" Factura : numera
+
+@enduml
