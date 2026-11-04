@@ -1,0 +1,161 @@
+@startuml diagrama_entidad_relacion
+title Diagrama físico Entidad-Relación
+
+hide circle
+
+entity "USUARIO" as USUARIO {
+  * id : INT <<PK>>
+  --
+  * nombre : VARCHAR(100)
+  * email : VARCHAR(150) <<UNIQUE>>
+  * password_hash : VARCHAR(255)
+  * rol : VARCHAR(20)
+}
+
+entity "CLIENTE" as CLIENTE {
+  * id : INT <<PK>>
+  --
+  * nombre_comercial : VARCHAR(150)
+  * razon_social : VARCHAR(150)
+  * nif : VARCHAR(20) <<UNIQUE>>
+  * domicilio_fiscal : VARCHAR(255)
+  * estado : VARCHAR(25)
+  * responsable_id : INT <<FK>>
+}
+
+entity "CONTACTO" as CONTACTO {
+  * id : INT <<PK>>
+  --
+  * cliente_id : INT <<FK>>
+  * nombre : VARCHAR(100)
+  * email : VARCHAR(150)
+  * rol : VARCHAR(20)
+}
+
+entity "SUSCRIPCION" as SUSCRIPCION {
+  * id : INT <<PK>>
+  --
+  * cliente_id : INT <<FK>> <<UNIQUE>>
+  * rango_tarifa_id : INT <<FK>>
+  * fecha_inicio : DATE
+  * estado : VARCHAR(20)
+}
+
+entity "RANGO_TARIFA" as RANGO_TARIFA {
+  * id : INT <<PK>>
+  --
+  * minimo : DECIMAL(12,2)
+  * maximo : DECIMAL(12,2)
+  * cuota_mensual : DECIMAL(10,2)
+}
+
+entity "FACTURA" as FACTURA {
+  * id : INT <<PK>>
+  --
+  numero : VARCHAR(20) <<UNIQUE>>
+  fecha_emision : DATE
+  fecha_vencimiento : DATE
+  * estado : VARCHAR(25)
+  * cliente_id : INT <<FK>>
+  suscripcion_id : INT <<FK>>
+  * serie_id : INT <<FK>>
+}
+
+entity "SERIE_FACTURACION" as SERIE_FACTURACION {
+  * id : INT <<PK>>
+  --
+  * prefijo : VARCHAR(10) <<UNIQUE>>
+  * ultimo_numero : INT
+}
+
+entity "FACTURA_RECTIFICATIVA" as FACTURA_RECTIFICATIVA {
+  * factura_id : INT <<PK>> <<FK>>
+  --
+  * factura_original_id : INT <<FK>>
+  * motivo : VARCHAR(255)
+}
+
+entity "LINEA_FACTURA" as LINEA_FACTURA {
+  * id : INT <<PK>>
+  --
+  * factura_id : INT <<FK>>
+  * concepto : VARCHAR(200)
+  * cantidad : INT
+  * precio : DECIMAL(10,2)
+  * descuento : DECIMAL(5,2)
+  * iva : DECIMAL(5,2)
+}
+
+entity "COBRO" as COBRO {
+  * id : INT <<PK>>
+  --
+  factura_id : INT <<FK>>
+  * fecha : DATE
+  * importe : DECIMAL(10,2)
+  * origen : VARCHAR(30)
+}
+
+entity "RECORDATORIO" as RECORDATORIO {
+  * id : INT <<PK>>
+  --
+  * factura_id : INT <<FK>>
+  * fecha : DATE
+  * tipo : VARCHAR(30)
+}
+
+entity "SOLICITUD_APROBACION" as SOLICITUD_APROBACION {
+  * id : INT <<PK>>
+  --
+  factura_id : INT <<FK>>
+  suscripcion_id : INT <<FK>>
+  administrador_id : INT <<FK>>
+  * motivo : VARCHAR(255)
+  * estado : VARCHAR(20)
+}
+
+entity "INCIDENCIA" as INCIDENCIA {
+  * id : INT <<PK>>
+  --
+  * cliente_id : INT <<FK>>
+  factura_id : INT <<FK>>
+  * responsable_id : INT <<FK>>
+  * tipo : VARCHAR(30)
+  * descripcion : VARCHAR(500)
+  * prioridad : VARCHAR(10)
+  * estado : VARCHAR(20)
+  fecha_revision : DATE
+  resolucion : VARCHAR(500)
+}
+
+entity "REGISTRO_AUDITORIA" as REGISTRO_AUDITORIA {
+  * id : INT <<PK>>
+  --
+  * usuario_id : INT <<FK>>
+  * fecha_hora : DATETIME
+  * accion : VARCHAR(50)
+  * elemento : VARCHAR(100)
+  valor_anterior : VARCHAR(500)
+  valor_nuevo : VARCHAR(500)
+}
+
+USUARIO ||--o{ CLIENTE : gestiona
+CLIENTE ||--|{ CONTACTO : tiene
+CLIENTE ||--o| SUSCRIPCION : contrata
+RANGO_TARIFA ||--o{ SUSCRIPCION : aplica
+CLIENTE ||--o{ FACTURA : recibe
+SUSCRIPCION |o--o{ FACTURA : genera
+FACTURA ||--|{ LINEA_FACTURA : contiene
+FACTURA ||--o| FACTURA_RECTIFICATIVA : es
+FACTURA ||--o{ FACTURA_RECTIFICATIVA : rectifica
+FACTURA |o--o{ COBRO : paga
+FACTURA ||--o{ RECORDATORIO : tiene
+FACTURA |o--o{ SOLICITUD_APROBACION : requiere
+USUARIO |o--o{ SOLICITUD_APROBACION : resuelve
+SUSCRIPCION |o--o{ SOLICITUD_APROBACION : requiere
+SERIE_FACTURACION ||--o{ FACTURA : numera
+CLIENTE ||--o{ INCIDENCIA : afecta
+FACTURA |o--o{ INCIDENCIA : afecta
+USUARIO ||--o{ INCIDENCIA : responsable
+USUARIO ||--o{ REGISTRO_AUDITORIA : realiza
+
+@enduml
