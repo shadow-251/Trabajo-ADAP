@@ -1,0 +1,104 @@
+@startuml
+autonumber
+
+actor "Usuario / Temporizador / Pasarela / API" as Actor
+participant ":InterfazSistema / API" as UI
+participant ":ControladorPrincipal" as Ctrl
+participant ":BaseDatos" as DB
+participant ":ServicioAprobacion" as Approval
+participant ":ServicioPDF" as PDF
+participant ":ServicioMensajeria" as Mail
+participant ":ServicioAuditoria" as Audit
+
+== BLOQUE 1: Clientes y Relación Comercial (CU-01 a CU-06) ==
+Actor -> UI: Crear/Importar cliente (CU-01, CU-02), configurar suscripción (CU-03), pausar (CU-04), revisar rango (CU-05) o solicitar baja (CU-06)
+activate UI
+UI -> Ctrl: procesarOperacionComercial()
+activate Ctrl
+Ctrl -> DB: validarIdentificadorFiscalYDuplicados()
+activate DB
+DB --> Ctrl: validacionCorrecta
+deactivate DB
+
+alt Requiere Aprobación (ej. Cambio de rango/descuento CU-05, CU-11)
+    Ctrl -> Approval: solicitarAprobacion()
+    activate Approval
+    Approval --> Ctrl: retenidaPendiente
+    deactivate Approval
+else Operación Estándar
+    Ctrl -> DB: actualizarFichaOSuscripcion()
+    Ctrl -> Audit: auditarAccionComercial()
+    Ctrl --> UI: confirmacionOperacion
+end
+deactivate Ctrl
+deactivate UI
+
+== BLOQUE 2: Facturación (CU-07 a CU-12) ==
+Actor -> UI: Disparar mensualidades (Temporizador CU-07), crear puntual (CU-08) o emitir rectificativa (Admin CU-10)
+activate UI
+UI -> Ctrl: procesarFacturacion()
+activate Ctrl
+Ctrl -> DB: comprobarSuscripcionesYDatosFiscales()
+
+alt CU-09: Emitir Factura
+    Ctrl -> DB: asignarNumeroSecuencialAtomico()
+    activate DB
+    DB --> Ctrl: numFactura
+    deactivate DB
+    Ctrl -> PDF: generarPDF(facturaData)
+    activate PDF
+    PDF --> Ctrl: archivoPDF
+    deactivate PDF
+    Ctrl -> Mail: enviarFacturaAContactos(archivoPDF)
+    Ctrl -> DB: guardarFacturaEmitida()
+end
+
+alt CU-12: Resolver Aprobación Pendiente (Admin)
+    Actor -> Ctrl: resolverSolicitud(aprobar/rechazar)
+    Ctrl -> DB: aplicarOperacionYReanudarEmision()
+end
+Ctrl --> UI: resumenFacturacion
+deactivate Ctrl
+deactivate UI
+
+== BLOQUE 3: Cobros (CU-13 a CU-16) ==
+Actor -> UI: Notificar pago (Stripe CU-13), ejecutar recordatorios (Temporizador CU-14), conciliar a mano (CU-15) u abrir incidencia (CU-16)
+activate UI
+UI -> Ctrl: procesarCobroORecordatorioOIncidencia()
+activate Ctrl
+Ctrl -> DB: buscarFacturaYVerificarSaldo()
+activate DB
+DB --> Ctrl: facturaCandidata
+deactivate DB
+
+alt Conciliación Automática Exitosa (CU-13)
+    Ctrl -> DB: marcarFacturaPagada()
+    Ctrl -> DB: detenerRecordatorios()
+else Discrepancia o Conciliación Manual (CU-15) / Incidencia (CU-16)
+    Ctrl -> DB: registrarMovimientoParaRevision()
+    Ctrl -> DB: pausarRecordatoriosTemporalmente()
+end
+Ctrl --> UI: resultadoCobro
+deactivate Ctrl
+deactivate UI
+
+== BLOQUE 4: Acceso, Seguimiento y Administración (CU-17 a CU-24) ==
+Actor -> UI: Iniciar sesión (CU-17), ver pendientes (CU-18), informes (CU-19), dashboard (CU-20), usuarios (CU-21), asignaciones (CU-22), configurar (CU-23) o auditoría (CU-24)
+activate UI
+UI -> Ctrl: procesarAccionSeguimientoOAdministrativa()
+activate Ctrl
+Ctrl -> DB: verificarPermisosSegunRolYDominio()
+activate DB
+DB --> Ctrl: datosAutorizados
+deactivate DB
+
+Ctrl -> Audit: registrarAccesoOAccionAdministrativa()
+activate Audit
+Audit --> Ctrl: ok
+deactivate Audit
+
+Ctrl --> UI: mostrarResultadosOPantalla()
+deactivate Ctrl
+deactivate UI
+
+@enduml

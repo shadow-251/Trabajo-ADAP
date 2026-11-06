@@ -1,0 +1,194 @@
+Casos de uso 1-2
+
+@startuml
+actor UsuarioOperativo
+participant ":InterfazCliente" as UI
+participant ":ControladorCliente" as Ctrl
+participant ":DataBase" as DB
+
+UsuarioOperativo -> UI: Dar de alta cliente (CU-01) o subir CSV (CU-02)
+activate UI
+UI -> Ctrl: procesarDatosFichaOArchivo()
+activate Ctrl
+Ctrl -> DB: validarIdentificadorFiscalYDuplicados()
+activate DB
+DB --> Ctrl: resultadoValidacion
+deactivate DB
+Ctrl -> DB: guardarFichaConContactos()
+activate DB
+DB --> Ctrl: clienteID
+deactivate DB
+Ctrl --> UI: confirmacionAlta
+UI --> UsuarioOperativo: MostrarExito()
+deactivate Ctrl
+deactivate UI
+@enduml
+
+Casos de uso 3-6
+
+@startuml
+actor UsuarioTemporizadorAPI
+participant ":InterfazSuscripcion" as UI
+participant ":ControladorComercial" as Ctrl
+participant ":DataBase" as DB
+
+UsuarioTemporizadorAPI -> UI: Configurar suscripción, pausar, revisión anual o baja
+activate UI
+UI -> Ctrl: procesarRelacionComercial()
+activate Ctrl
+Ctrl -> DB: comprobarDatosFiscalesYVigencia()
+activate DB
+DB --> Ctrl: datosValidos
+deactivate DB
+Ctrl -> DB: actualizarEstadoSuscripcionOBaja()
+activate DB
+DB --> Ctrl: operacionRegistrada
+deactivate DB
+Ctrl --> UI: ok
+UI --> UsuarioTemporizadorAPI: MostrarResultado()
+deactivate Ctrl
+deactivate UI
+@enduml
+
+Casos de uso 7-9
+
+@startuml
+actor TemporizadorUsuario
+participant ":ControladorFacturacion" as Ctrl
+participant ":DataBase" as DB
+participant ":ServicioPDF" as PDF
+
+TemporizadorUsuario -> Ctrl: Generar mensualidades (CU-07) o crear puntual (CU-08)
+activate Ctrl
+Ctrl -> DB: obtenerSuscripcionesOBorradores()
+activate DB
+DB --> Ctrl: listaFacturasBorrador
+deactivate DB
+loop para cada elemento
+    Ctrl -> DB: asignarNumeroSerieAtomico()
+    activate DB
+    DB --> Ctrl: numFactura
+    deactivate DB
+    Ctrl -> PDF: generarPDF(facturaData)
+    activate PDF
+    PDF --> Ctrl: archivoPDF
+    deactivate PDF
+    Ctrl -> DB: guardarFacturaEmitida (CU-09)
+end
+Ctrl --> TemporizadorUsuario: finProcesoEmision
+deactivate Ctrl
+@enduml
+
+Casos de uso 10-12
+
+@startuml
+actor Administrador
+participant ":InterfazFacturacion" as UI
+participant ":ControladorAprobacion" as Ctrl
+participant ":DataBase" as DB
+
+Administrador -> UI: Emitir rectificativa (CU-10) o modificar operacion sensible
+activate UI
+UI -> Ctrl: evaluarReglasDeNegocioYAprobacion (CU-11)
+activate Ctrl
+Ctrl -> DB: crearSolicitudPendienteRetenida()
+activate DB
+DB --> Ctrl: solicitudID
+deactivate DB
+Ctrl --> UI: retenidaParaAprobacion
+UI --> Administrador: MostrarPendiente()
+Administrador -> Ctrl: resolverSolicitud(aprobar o rechazar) (CU-12)
+Ctrl -> DB: aplicarOperacionDefinitiva()
+deactivate Ctrl
+deactivate UI
+@enduml
+
+Casos de uso 13-14
+
+@startuml
+actor PasarelaTemporizador
+participant ":APIWebhook" as API
+participant ":ControladorCobros" as Ctrl
+participant ":DataBase" as DB
+
+PasarelaTemporizador -> API: Notificar pago (CU-13) o ejecutar recordatorios (CU-14)
+activate API
+API -> Ctrl: procesarPagoORecordatorioDiario()
+activate Ctrl
+Ctrl -> DB: registrarMovimientoOCalcularVencimientos()
+activate DB
+DB --> Ctrl: estadoActualizado
+deactivate DB
+Ctrl -> DB: conciliarAutomaticamenteOEnviarMensaje()
+Ctrl --> API: 200 OK
+deactivate Ctrl
+deactivate API
+@enduml
+
+Casos de uso 15-16
+
+@startuml
+actor UsuarioOperativo
+participant ":InterfazCobros" as UI
+participant ":ControladorIncidencias" as Ctrl
+participant ":DataBase" as DB
+
+UsuarioOperativo -> UI: Conciliar cobro a mano (CU-15) o abrir incidencia (CU-16)
+activate UI
+UI -> Ctrl: procesarResolucionODatosIncidencia()
+activate Ctrl
+Ctrl -> DB: validarImporteYRegistrarCambio()
+activate DB
+DB --> Ctrl: operacionGuardada
+deactivate DB
+Ctrl -> DB: actualizarSaldoPausarRecordatoriosOFijarResolucion()
+Ctrl --> UI: exito
+UI --> UsuarioOperativo: MostrarEstadoActualizado()
+deactivate Ctrl
+deactivate UI
+@enduml
+
+Casos de uso 17-20
+
+@startuml
+actor UsuarioAdmin
+participant ":InterfazSistema" as UI
+participant ":ControladorSeguimiento" as Ctrl
+participant ":DataBase" as DB
+
+UsuarioAdmin -> UI: Iniciar sesión (CU-17) / Trabajo pendiente (CU-18) / Informes (CU-19) / Dashboard (CU-20)
+activate UI
+UI -> Ctrl: procesarConsultaSegunRol()
+activate Ctrl
+Ctrl -> DB: verificarCredencialesYObtenerDatosFiltrados()
+activate DB
+DB --> Ctrl: datosAutorizados
+deactivate DB
+Ctrl --> UI: mostrarResultados
+UI --> UsuarioAdmin: VisualizarPantalla()
+deactivate Ctrl
+deactivate UI
+@enduml
+
+Casos de uso 21-24
+
+@startuml
+actor Superadministrador
+participant ":InterfazAdmin" as UI
+participant ":ControladorGlobal" as Ctrl
+participant ":DataBase" as DB
+
+Superadministrador -> UI: Gestionar usuarios (CU-21), asignar clientes (CU-22), configurar (CU-23) u operar auditoría (CU-24)
+activate UI
+UI -> Ctrl: procesarAccionAdministrativaGlobal()
+activate Ctrl
+Ctrl -> DB: validarYGuardarVersionadoOAsignaciones()
+activate DB
+DB --> Ctrl: ok
+deactivate DB
+Ctrl -> DB: registrarAccesoEnAuditoriaInalterable()
+Ctrl --> UI: exito
+UI --> Superadministrador: MostrarConfirmacion()
+deactivate Ctrl
+deactivate UI
+@enduml
