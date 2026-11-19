@@ -1,0 +1,64 @@
+@startuml
+title CU-08 Crear factura puntual (con CU-11 y CU-12 si hay descuento)
+
+actor "Usuario operativo" as Gestor
+participant InterfazWeb
+participant ControladorFacturacion
+database BaseDatos
+actor Administrador
+
+Gestor -> InterfazWeb : 1: crearFacturaPuntual(cliente, lineas)
+activate InterfazWeb
+InterfazWeb -> ControladorFacturacion : 2: crearFactura(idCliente, lineas)
+activate ControladorFacturacion
+
+ControladorFacturacion -> BaseDatos : 3: buscarCliente(idCliente)
+activate BaseDatos
+BaseDatos --> ControladorFacturacion : cliente
+deactivate BaseDatos
+
+create participant ":Factura" as Fac
+ControladorFacturacion -> Fac : 4: crear(cliente)
+
+loop para cada línea
+  create participant ":LineaFactura" as Linea
+  Fac -> Linea : 5: crear(concepto, cantidad, precio, descuento, iva)
+end
+
+ControladorFacturacion -> Fac : 6: calcularTotal()
+activate Fac
+Fac --> ControladorFacturacion : total
+deactivate Fac
+
+alt descuento mayor que el permitido
+  create participant ":SolicitudAprobacion" as Sol
+  ControladorFacturacion -> Sol : 7: crear(motivo, factura)
+  ControladorFacturacion -> Fac : 8: setEstado(PENDIENTE_APROBACION)
+  ControladorFacturacion --> InterfazWeb : pendiente de aprobación
+  InterfazWeb --> Gestor : aviso "falta aprobación"
+
+  ...el administrador revisa la solicitud...
+
+  Administrador -> ControladorFacturacion : 9: resolverAprobacion(solicitud, decision)
+  alt aprobada
+    ControladorFacturacion -> Sol : 10: setEstado(APROBADA)
+    ControladorFacturacion -> Fac : 11: emitir()
+  else rechazada
+    ControladorFacturacion -> Sol : 12: setEstado(RECHAZADA)
+    ControladorFacturacion -> Fac : 13: setEstado(BORRADOR)
+  end
+
+else descuento normal
+  ControladorFacturacion -> Fac : 14: emitir()
+  activate Fac
+  Fac -> Fac : 15: generarPDF()
+  deactivate Fac
+  ControladorFacturacion -> BaseDatos : 16: guardar(factura)
+  ControladorFacturacion --> InterfazWeb : factura emitida
+  InterfazWeb --> Gestor : muestra el PDF
+end
+
+deactivate ControladorFacturacion
+deactivate InterfazWeb
+
+@enduml

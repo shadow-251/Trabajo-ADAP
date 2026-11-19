@@ -1,0 +1,70 @@
+@startuml
+title CU-07 Generar facturas recurrentes (día 1 de cada mes)
+
+actor Temporizador
+participant ControladorFacturacion
+database BaseDatos
+participant ":Suscripcion" as Sus
+participant ":RangoTarifa" as Rango
+participant ":SerieFacturacion" as Serie
+participant ServicioMensajeria
+
+Temporizador -> ControladorFacturacion : 1: generarRecurrentes(fecha)
+activate ControladorFacturacion
+
+ControladorFacturacion -> BaseDatos : 2: obtenerSuscripcionesActivas()
+activate BaseDatos
+BaseDatos --> ControladorFacturacion : lista de suscripciones
+deactivate BaseDatos
+
+loop para cada suscripción activa
+
+  ControladorFacturacion -> BaseDatos : 3: existeFacturaDelMes(suscripcion, fecha)
+  activate BaseDatos
+  BaseDatos --> ControladorFacturacion : true / false
+  deactivate BaseDatos
+
+  alt ya tiene la factura de este mes
+    note over ControladorFacturacion : se salta (si el proceso se relanza\nno se duplican facturas, NFR6)
+  else no tiene factura
+
+    ControladorFacturacion -> Sus : 4: obtenerCuota()
+    activate Sus
+    Sus -> Rango : 5: getCuotaMensual()
+    activate Rango
+    Rango --> Sus : cuota
+    deactivate Rango
+    Sus --> ControladorFacturacion : cuota
+    deactivate Sus
+
+    create participant ":Factura" as Fac
+    ControladorFacturacion -> Fac : 6: crear(cliente, suscripcion)
+    create participant ":LineaFactura" as Linea
+    Fac -> Linea : 7: crear("Cuota mensual", 1, cuota)
+
+    ControladorFacturacion -> Serie : 8: siguienteNumero()
+    activate Serie
+    Serie --> ControladorFacturacion : numero
+    deactivate Serie
+
+    ControladorFacturacion -> Fac : 9: emitir(numero)
+    activate Fac
+    Fac -> Fac : 10: calcularTotal()
+    Fac -> Fac : 11: generarPDF()
+    Fac --> ControladorFacturacion : factura emitida
+    deactivate Fac
+
+    ControladorFacturacion -> BaseDatos : 12: guardar(factura)
+
+    ControladorFacturacion -> ServicioMensajeria : 13: enviarFactura(contactoFacturacion, pdf)
+    activate ServicioMensajeria
+    ServicioMensajeria --> ControladorFacturacion : enviado / rebotado
+    deactivate ServicioMensajeria
+
+  end
+end
+
+ControladorFacturacion --> Temporizador : nº de facturas generadas
+deactivate ControladorFacturacion
+
+@enduml

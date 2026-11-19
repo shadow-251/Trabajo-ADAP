@@ -1,0 +1,58 @@
+@startuml
+title CU-13 Registrar cobro y CU-15 Conciliar cobro manualmente
+
+actor "Pasarela de cobro" as Pasarela
+participant ControladorCobros
+database BaseDatos
+participant ":Factura" as Fac
+actor "Usuario operativo" as Gestor
+
+Pasarela -> ControladorCobros : 1: notificarPago(idPago, referencia, importe)
+activate ControladorCobros
+
+ControladorCobros -> BaseDatos : 2: buscarCobro(idPago)
+activate BaseDatos
+BaseDatos --> ControladorCobros : cobro / null
+deactivate BaseDatos
+
+alt el pago ya estaba registrado
+  ControladorCobros --> Pasarela : OK (se ignora, no se duplica)
+else pago nuevo
+
+  create participant ":Cobro" as Cob
+  ControladorCobros -> Cob : 3: crear(fecha, importe, origen)
+
+  ControladorCobros -> BaseDatos : 4: buscarFactura(referencia)
+  activate BaseDatos
+  BaseDatos --> ControladorCobros : factura
+  deactivate BaseDatos
+
+  ControladorCobros -> Fac : 5: calcularTotal()
+  activate Fac
+  Fac --> ControladorCobros : total
+  deactivate Fac
+
+  alt importe == total pendiente
+    ControladorCobros -> Cob : 6: conciliar(factura)
+    ControladorCobros -> Fac : 7: setEstado(PAGADA)
+    note right of Fac : al estar pagada ya no\nse envían recordatorios
+  else el importe no cuadra (pago parcial o de más)
+    ControladorCobros -> BaseDatos : 8: guardarPendienteConciliar(cobro)
+    note right of ControladorCobros : aparece en las tareas\npendientes del gestor
+  end
+
+  ControladorCobros --> Pasarela : OK
+end
+deactivate ControladorCobros
+
+== Más tarde, si no cuadraba (CU-15) ==
+
+Gestor -> ControladorCobros : 9: conciliarManual(cobro, factura)
+activate ControladorCobros
+ControladorCobros -> Cob : 10: conciliar(factura)
+ControladorCobros -> Fac : 11: setEstado(PAGADA o EMITIDA con saldo pendiente)
+ControladorCobros -> BaseDatos : 12: guardar(cobro, factura)
+ControladorCobros --> Gestor : conciliado
+deactivate ControladorCobros
+
+@enduml

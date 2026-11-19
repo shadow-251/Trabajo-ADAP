@@ -1,0 +1,62 @@
+@startuml
+title Diagrama de componentes - Sistema de facturación Turbine
+
+actor "Usuario interno\n(operativo, admin,\nsuperadmin)" as Usuario
+
+package "Frontend" {
+  [Aplicación web] as Web
+}
+
+package "Backend" {
+  [API REST] as API
+  [Autenticación y roles] as Auth
+  [Gestión de clientes] as Clientes
+  [Facturación] as Fact
+  [Generador de PDF] as PDF
+  [Cobros y conciliación] as Cobros
+  [Notificaciones] as Noti
+  [Dashboard e informes] as Informes
+  [Tareas programadas] as Cron
+  [Auditoría] as Audit
+}
+
+database "Base de datos" as BD
+
+package "Sistemas externos" {
+  [Brain] as Brain
+  [Pasarela de cobro\n(Stripe simulado)] as Stripe
+  [Email / WhatsApp\n(simulado)] as Mensajeria
+}
+
+Usuario --> Web
+Web -(0- API : HTTPS / JSON
+
+API -(0- Auth : IAuth
+API -(0- Clientes : IClientes
+API -(0- Fact : IFacturas
+API -(0- Cobros : ICobros
+API -(0- Informes : IInformes
+
+API -0)- Brain : IBrain (deuda y bajas)
+Stripe --(0- Cobros : webhook de pagos
+
+Cron -(0- Fact : generar recurrentes
+Cron -(0- Noti : recordatorios
+
+Fact -(0- PDF : IPdf
+Fact -(0- Noti : INotificaciones
+Clientes -(0- Fact : IClientes
+Noti --(0- Mensajeria : enviar
+
+Clientes --(0- BD : IDatos
+Fact --(0- BD : IDatos
+Cobros --(0- BD : IDatos
+Informes --(0- BD : IDatos
+Auth --(0- BD : IDatos
+Audit --(0- BD : IDatos
+
+Clientes ..> Audit : registra cambios
+Fact ..> Audit : registra cambios
+Cobros ..> Audit : registra cambios
+
+@enduml
