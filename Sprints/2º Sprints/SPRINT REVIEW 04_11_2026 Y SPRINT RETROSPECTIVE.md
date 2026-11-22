@@ -1,9 +1,15 @@
-# SPRINT REVIEW 04/11/2026
+### SPRINT REVIEW — 04/11/2026
 
-El diagrama de clases está hecho. Hicimos una primera versión y luego la 2.0, que es con la que nos quedamos. El Entidad-Relación también está terminado y lo hemos sacado a partir de las clases.
+Durante este Sprint hemos completado el diagrama de clases, realizando una primera versión y posteriormente una versión 2.0, que hemos decidido mantener como definitiva. También hemos terminado el diagrama Entidad-Relación, elaborado a partir del diagrama de clases.
 
-La arquitectura tiene una primera versión, pero se parece demasiado al diagrama de clases y hay que rehacerla. De secuencia solo tenemos el ejemplo, así que pasa al siguiente Sprint.
+En cuanto a la arquitectura, hemos realizado una primera versión, pero hemos detectado que se parece demasiado al diagrama de clases, por lo que hemos decidido rehacerla. Respecto al diagrama de secuencia, únicamente hemos realizado un ejemplo, por lo que su desarrollo queda pendiente para el siguiente Sprint.
 
-# SPRINT RETROSPECTIVE
+### SPRINT RETROSPECTIVE — 04/11/2026
 
-Cada uno ha hecho su parte, pero hemos ido subiendo archivos sueltos al GitHub y está bastante desordenado. También vimos que hace falta comprobar que los diagramas cuadren entre ellos
+Durante este Sprint, cada integrante del equipo ha realizado las tareas que tenía asignadas, por lo que el reparto de trabajo ha funcionado correctamente.
+
+Sin embargo, hemos detectado algunos problemas de organización, especialmente en GitHub, donde hemos ido subiendo archivos sueltos sin una estructura clara, lo que ha dificultado mantener el repositorio ordenado.
+
+Además, hemos observado que es necesario comprobar mejor la coherencia entre los diferentes diagramas para evitar inconsistencias.
+
+Como mejora para el siguiente Sprint, hemos decidido organizar el repositorio en carpetas según el tipo de diagrama y realizar revisiones conjuntas para comprobar que todos los diagramas sean coherentes entre sí.
