@@ -12,7 +12,7 @@ Scrum y sprints: Cristina
 
 Revisión: Jorge y Yipin
 
-Presentación: Jose y Dani
+Presentación: todos revisamos pero la crean Denis y Cristina
 
 Evaluación de las bolas: todos
 
